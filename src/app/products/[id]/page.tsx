@@ -5,10 +5,8 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 
-interface ProductPageProps {
-  params: {
-    id: string;
-  };
+interface ProductPageParams {
+  id: string;
 }
 
 const getProduct = cache(async (id: string) => {
@@ -17,9 +15,8 @@ const getProduct = cache(async (id: string) => {
   return product;
 });
 
-export async function generateMetadata({
-  params: { id },
-}: ProductPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<ProductPageParams> }): Promise<Metadata> {
+  const { id } = await params;
   const product = await getProduct(id);
 
   return {
@@ -31,9 +28,8 @@ export async function generateMetadata({
   };
 }
 
-export default async function ProductPage({
-  params: { id },
-}: ProductPageProps) {
+export default async function ProductPage({ params }: { params: Promise<ProductPageParams> }) {
+  const { id } = await params;
   const product = await getProduct(id);
 
   return (
@@ -46,7 +42,6 @@ export default async function ProductPage({
         className="rounded-lg"
         priority
       />
-
       <div>
         <h1 className="text-5xl font-bold">{product.name}</h1>
         <PriceTag price={product.price} className="mt-4" />
@@ -54,4 +49,4 @@ export default async function ProductPage({
       </div>
     </div>
   );
-} 
+}
