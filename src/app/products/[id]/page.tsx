@@ -4,6 +4,8 @@ import { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { cache } from "react";
+import AddToCartButton from "./AddToCartButton";
+import { incrementProductQuantity } from "./actions";
 
 interface ProductPageParams {
   id: string;
@@ -15,7 +17,11 @@ const getProduct = cache(async (id: string) => {
   return product;
 });
 
-export async function generateMetadata({ params }: { params: Promise<ProductPageParams> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<ProductPageParams>;
+}): Promise<Metadata> {
   const { id } = await params;
   const product = await getProduct(id);
 
@@ -28,7 +34,11 @@ export async function generateMetadata({ params }: { params: Promise<ProductPage
   };
 }
 
-export default async function ProductPage({ params }: { params: Promise<ProductPageParams> }) {
+export default async function ProductPage({
+  params,
+}: {
+  params: Promise<ProductPageParams>;
+}) {
   const { id } = await params;
   const product = await getProduct(id);
 
@@ -46,6 +56,10 @@ export default async function ProductPage({ params }: { params: Promise<ProductP
         <h1 className="text-5xl font-bold">{product.name}</h1>
         <PriceTag price={product.price} className="mt-4" />
         <p className="py-6">{product.description}</p>
+        <AddToCartButton
+          productId={product.id}
+          incrementProductQuantity={incrementProductQuantity}
+        />
       </div>
     </div>
   );

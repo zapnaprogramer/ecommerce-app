@@ -5,10 +5,18 @@ const nextConfig = {
     serverActions: { bodySizeLimit: '2mb' },
   },
   images: {
-    remotePatterns: [
+     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com", // Google profile pictures
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com", // Unsplash images
+      },
+        {
+        protocol: "https",
+        hostname: "plus.unsplash.com", // <-- Added this line
       },
     ],
   },
