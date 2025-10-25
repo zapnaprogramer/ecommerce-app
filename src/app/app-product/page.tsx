@@ -2,7 +2,9 @@
 import FormSubmitButton from "@/components/FormSubmitButton";
 
 import { prisma } from "@/lib/db/prisma";
+import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
+import { authOptions } from "../api/auth/[...nextauth]/route";
 
 export const metadata = {
   title: "Add Product - Zamazon",
@@ -10,6 +12,12 @@ export const metadata = {
 
 async function addProduct(formData: FormData) {
   "use server";
+
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    redirect("/api/auth/signin?callbackUrl=/app/product");
+  }
 
   const name = formData.get("name")?.toString();
   const description = formData.get("description")?.toString();
@@ -19,15 +27,17 @@ async function addProduct(formData: FormData) {
   if (!name || !description || !imageUrl || !price) {
     throw Error("Missing required fields");
   }
-
+for (let i = 0; i < 50; i++){
   await prisma.product.create({
     data: { name, description, imageUrl, price },
   });
-
+}
   redirect("/");
 }
 
-export default function AddProductPage() {
+export default async function AddProductPage() {
+  const session = await getServerSession(authOptions);
+  if (!session) {redirect("/api/auth/signin?callbackUrl=/app/product");}
   return (
     <div>
       <h1 className="mb-3 text-lg font-bold">Add Product</h1>
