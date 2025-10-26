@@ -15,8 +15,18 @@ export function generateMetadata({
 }
 
 export default async function SearchPage({
-  searchParams: { query },
-}: SearchPageProps) {
+  searchParams,
+}: {
+  // accept a Promise (what Next may pass) or a plain object (what you may receive)
+  searchParams?: Promise<any> | Record<string, string> | undefined;
+}) {
+  const resolvedParams =
+    searchParams instanceof Promise
+      ? await searchParams
+      : searchParams ?? {};
+
+  const query = resolvedParams.query ?? "";
+
   const products = await prisma.product.findMany({
     where: {
       OR: [
@@ -38,4 +48,4 @@ export default async function SearchPage({
       ))}
     </div>
   );
-}  
+}
