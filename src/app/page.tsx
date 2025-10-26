@@ -7,10 +7,9 @@ import Link from "next/link";
 export default async function Home({
   searchParams,
 }: {
-  searchParams?: Promise<Record<string, string>> | Record<string, string>;
+  searchParams?: Record<string, string>;
 }) {
-  const params = await Promise.resolve(searchParams);
-  const page = params?.page ?? "1";
+  const page = searchParams?.page ?? "1";
   const currentPage = parseInt(page);
 
   const pageSize = 6;
@@ -28,6 +27,7 @@ export default async function Home({
 
   return (
     <div className="flex flex-col items-center">
+      {/* Hero Section */}
       {currentPage === 1 && products.length > 0 && (
         <div className="hero rounded-xl bg-base-200">
           <div className="hero-content flex-col lg:flex-row">
@@ -44,7 +44,7 @@ export default async function Home({
               <p className="py-6">{products[0].description}</p>
               <Link
                 href={`/products/${products[0].id}`}
-                className="btn-primary btn"
+                className="btn btn-primary"
               >
                 Check it out
               </Link>
@@ -53,12 +53,14 @@ export default async function Home({
         </div>
       )}
 
+      {/* Products Grid */}
       <div className="my-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {(currentPage === 1 ? products.slice(1) : products).map((product) => (
           <ProductCard product={product} key={product.id} />
         ))}
       </div>
 
+      {/* Pagination */}
       {totalPages > 1 && (
         <PaginationBar currentPage={currentPage} totalPages={totalPages} />
       )}
