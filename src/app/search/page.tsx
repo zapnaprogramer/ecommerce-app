@@ -9,30 +9,32 @@ type SearchPageProps = {
 
 export async function generateMetadata({
   searchParams,
-}: SearchPageProps): Promise<Metadata> {
-  const resolvedParams =
+}: {
+  searchParams?: MaybeSearchParams | Promise<MaybeSearchParams>;
+}): Promise<Metadata> {
+  const resolvedParams: MaybeSearchParams =
     searchParams instanceof Promise ? await searchParams : searchParams ?? {};
 
-  const rawQuery = (resolvedParams as Record<string, string | string[]>).query;
-  const query = Array.isArray(rawQuery) ? rawQuery[0] : rawQuery ?? "";
+  const queryValue = Array.isArray(resolvedParams?.query)
+    ? resolvedParams?.query[0]
+    : (resolvedParams?.query as string | undefined);
+
+  const query = queryValue ?? "";
 
   return {
     title: `Search: ${query} - Flowmazon`,
   };
 }
 
-export default async function SearchPage({
-  searchParams,
-}: {
-  // accept a Promise (what Next may pass) or a plain object (what you may receive)
-  searchParams?: Promise<any> | Record<string, string> | undefined;
-}) {
-  const resolvedParams =
-    searchParams instanceof Promise
-      ? await searchParams
-      : searchParams ?? {};
+export default async function SearchPage({ searchParams }: SearchPageProps) {
+  const resolvedParams: MaybeSearchParams =
+    searchParams instanceof Promise ? await searchParams : searchParams ?? {};
 
-  const query = resolvedParams.query ?? "";
+  const queryValue = Array.isArray(resolvedParams?.query)
+    ? resolvedParams?.query[0]
+    : (resolvedParams?.query as string | undefined);
+
+  const query = queryValue ?? "";
 
   const products = await prisma.product.findMany({
     where: {
