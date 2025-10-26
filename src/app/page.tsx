@@ -7,9 +7,15 @@ import Link from "next/link";
 export default async function Home({
   searchParams,
 }: {
-  searchParams?: Record<string, string>;
+  searchParams?: Record<string, string> | Promise<Record<string, string>>;
 }) {
-  const page = searchParams?.page ?? "1";
+  // ✅ Handle both Promise and normal object cases
+  const resolvedParams =
+    searchParams instanceof Promise
+      ? await searchParams
+      : searchParams ?? {};
+
+  const page = resolvedParams.page ?? "1";
   const currentPage = parseInt(page);
 
   const pageSize = 6;
