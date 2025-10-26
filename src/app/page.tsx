@@ -4,20 +4,19 @@ import { prisma } from "@/lib/db/prisma";
 import Image from "next/image";
 import Link from "next/link";
 
-interface HomeProps {
-  searchParams: { page: string };
-}
-
 export default async function Home({
-  searchParams: { page = "1" },
-}: HomeProps) {
+  searchParams,
+}: {
+  searchParams?: Promise<Record<string, string>> | Record<string, string>;
+}) {
+  const params = await Promise.resolve(searchParams);
+  const page = params?.page ?? "1";
   const currentPage = parseInt(page);
 
   const pageSize = 6;
   const heroItemCount = 1;
 
   const totalItemCount = await prisma.product.count();
-
   const totalPages = Math.ceil((totalItemCount - heroItemCount) / pageSize);
 
   const products = await prisma.product.findMany({
@@ -29,7 +28,7 @@ export default async function Home({
 
   return (
     <div className="flex flex-col items-center">
-      {currentPage === 1 && (
+      {currentPage === 1 && products.length > 0 && (
         <div className="hero rounded-xl bg-base-200">
           <div className="hero-content flex-col lg:flex-row">
             <Image
@@ -44,7 +43,7 @@ export default async function Home({
               <h1 className="text-5xl font-bold">{products[0].name}</h1>
               <p className="py-6">{products[0].description}</p>
               <Link
-                href={"/products/" + products[0].id}
+                href={`/products/${products[0].id}`}
                 className="btn-primary btn"
               >
                 Check it out
