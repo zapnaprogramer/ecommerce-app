@@ -4,16 +4,19 @@ import { prisma } from "@/lib/db/prisma";
 import Image from "next/image";
 import Link from "next/link";
 
+// ✅ Use "any" for compatibility with Next.js internal PageProps type
 export default async function Home({
   searchParams,
 }: {
-  searchParams?: Record<string, string> | Promise<Record<string, string>>;
+  searchParams?: Promise<any> | undefined;
 }) {
-  // ✅ Handle both Promise and normal object cases
+  // Next.js sometimes passes it as a plain object, so we normalize it
   const resolvedParams =
     searchParams instanceof Promise
       ? await searchParams
-      : searchParams ?? {};
+      : searchParams
+      ? (searchParams as Record<string, string>)
+      : {};
 
   const page = resolvedParams.page ?? "1";
   const currentPage = parseInt(page);
