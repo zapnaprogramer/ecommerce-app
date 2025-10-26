@@ -4,19 +4,19 @@ import { Metadata } from "next";
 
 type MaybeSearchParams = Record<string, string | string[]> | undefined;
 type SearchPageProps = {
-  searchParams?: MaybeSearchParams | Promise<MaybeSearchParams>;
+  // match Next's expected PageProps: searchParams is a Promise or undefined
+  searchParams?: Promise<MaybeSearchParams>;
 };
 
 export async function generateMetadata({
   searchParams,
 }: {
-  searchParams?: MaybeSearchParams | Promise<MaybeSearchParams>;
+  searchParams?: Promise<MaybeSearchParams>;
 }): Promise<Metadata> {
-  const resolvedParams: MaybeSearchParams =
-    searchParams instanceof Promise ? await searchParams : searchParams ?? {};
+  const resolvedParams: MaybeSearchParams = searchParams ? await searchParams : {};
 
   const queryValue = Array.isArray(resolvedParams?.query)
-    ? resolvedParams?.query[0]
+    ? resolvedParams.query[0]
     : (resolvedParams?.query as string | undefined);
 
   const query = queryValue ?? "";
@@ -27,11 +27,10 @@ export async function generateMetadata({
 }
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
-  const resolvedParams: MaybeSearchParams =
-    searchParams instanceof Promise ? await searchParams : searchParams ?? {};
+  const resolvedParams: MaybeSearchParams = searchParams ? await searchParams : {};
 
   const queryValue = Array.isArray(resolvedParams?.query)
-    ? resolvedParams?.query[0]
+    ? resolvedParams.query[0]
     : (resolvedParams?.query as string | undefined);
 
   const query = queryValue ?? "";
