@@ -2,13 +2,20 @@ import ProductCard from "@/components/ProductCard";
 import { prisma } from "@/lib/db/prisma";
 import { Metadata } from "next";
 
-interface SearchPageProps {
-  searchParams: { query: string };
-}
+type MaybeSearchParams = Record<string, string | string[]> | undefined;
+type SearchPageProps = {
+  searchParams?: MaybeSearchParams | Promise<MaybeSearchParams>;
+};
 
-export function generateMetadata({
-  searchParams: { query },
-}: SearchPageProps): Metadata {
+export async function generateMetadata({
+  searchParams,
+}: SearchPageProps): Promise<Metadata> {
+  const resolvedParams =
+    searchParams instanceof Promise ? await searchParams : searchParams ?? {};
+
+  const rawQuery = (resolvedParams as Record<string, string | string[]>).query;
+  const query = Array.isArray(rawQuery) ? rawQuery[0] : rawQuery ?? "";
+
   return {
     title: `Search: ${query} - Flowmazon`,
   };
