@@ -1,34 +1,22 @@
-export const dynamic = "force-dynamic";
-
 import ProductCard from "@/components/ProductCard";
 import { prisma } from "@/lib/db/prisma";
 import { Metadata } from "next";
 
-type SearchParams = {
-  query?: string | string[];
-};
+interface SearchPageProps {
+  searchParams: { query: string };
+}
 
-export async function generateMetadata({
-  searchParams,
-}: {
-  searchParams?: SearchParams;
-}): Promise<Metadata> {
-  const queryParam = searchParams?.query;
-  const query = Array.isArray(queryParam) ? queryParam[0] : queryParam ?? "";
-
+export function generateMetadata({
+  searchParams: { query },
+}: SearchPageProps): Metadata {
   return {
     title: `Search: ${query} - Flowmazon`,
   };
 }
 
 export default async function SearchPage({
-  searchParams,
-}: {
-  searchParams?: SearchParams;
-}) {
-  const queryParam = searchParams?.query;
-  const query = Array.isArray(queryParam) ? queryParam[0] : queryParam ?? "";
-
+  searchParams: { query },
+}: SearchPageProps) {
   const products = await prisma.product.findMany({
     where: {
       OR: [
