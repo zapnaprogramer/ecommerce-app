@@ -3,20 +3,33 @@ import { prisma } from "@/lib/db/prisma";
 import { Metadata } from "next";
 
 interface SearchPageProps {
-  searchParams: { query: string };
+  searchParams: Promise<{ query?: string }>;
 }
 
-export function generateMetadata({
-  searchParams: { query },
-}: SearchPageProps): Metadata {
+// ✅ Handle async searchParams (Next.js 15+ expects a Promise)
+export async function generateMetadata(
+  { searchParams }: SearchPageProps
+): Promise<Metadata> {
+  const params = await searchParams;
+  const query = params?.query || "";
+
   return {
-    title: `Search: ${query} - Flowmazon`,
+    title: query ? `Search: ${query} - Flowmazon` : "Search - Flowmazon",
   };
 }
 
-export default async function SearchPage({
-  searchParams: { query },
-}: SearchPageProps) {
+export default async function SearchPage(
+  { searchParams }: SearchPageProps
+) {
+  const params = await searchParams;
+  const query = params?.query || "";
+
+  // ✅ Early exit if query is empty
+  if (!query) {
+    return <div className="text-center">Please enter a search term.</div>;
+  }
+
+  // ✅ Prisma query
   const products = await prisma.product.findMany({
     where: {
       OR: [
@@ -27,10 +40,12 @@ export default async function SearchPage({
     orderBy: { id: "desc" },
   });
 
+  // ✅ Handle no results
   if (products.length === 0) {
-    return <div className="text-center">No products found</div>;
+    return <div className="text-center">No products found for "{query}".</div>;
   }
 
+  // ✅ Display results
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
       {products.map((product) => (

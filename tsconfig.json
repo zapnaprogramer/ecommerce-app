@@ -1,38 +1,53 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    /* ✅ Modern build target */
+    "target": "ESNext",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+
+    /* ✅ JavaScript & TypeScript compatibility */
     "allowJs": true,
     "skipLibCheck": true,
+
+    /* ✅ Strong type checking for safer code */
     "strict": true,
     "forceConsistentCasingInFileNames": true,
+
+    /* ✅ Don't output compiled JS files (Next handles this) */
     "noEmit": true,
+
+    /* ✅ Smooth ES module interop */
     "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+
+    /* ✅ Helps TypeScript understand Next.js features */
     "plugins": [
       {
         "name": "next"
       }
     ],
+
+    /* ✅ Custom import paths */
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"]
     },
-    "typeRoots": [
-      "./@types",
-      "./node_modules/@types"
-    ]
+
+    /* ✅ Add new features from Next.js 15+ */
+    "types": ["@types/node", "next", "next/types/global"],
+
+    /* ✅ Fix for async searchParams and serverActions typing */
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": false,
+    "verbatimModuleSyntax": true,
+
+    /* ✅ Make sure type declarations are recognized */
+    "typeRoots": ["./@types", "./node_modules/@types"]
   },
+
   "include": [
     "next-env.d.ts",
     "src/**/*.ts",
@@ -40,7 +55,6 @@
     ".next/types/**/*.ts",
     "@types/**/*.d.ts"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+
+  "exclude": ["node_modules"]
 }
