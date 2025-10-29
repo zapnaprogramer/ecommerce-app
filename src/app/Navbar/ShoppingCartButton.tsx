@@ -1,6 +1,6 @@
 "use client";
 
-import { ShoppingCart } from "@/lib/db/cart";
+import  type { ShoppingCart } from "@/lib/db/cart";
 import { formatPrice } from "@/lib/format";
 import Link from "next/link";
 
