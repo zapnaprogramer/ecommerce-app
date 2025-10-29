@@ -1,7 +1,7 @@
 "use client";
 
 import profilePicPlaceholder from "@/assets/profile-pic-placeholder.png";
-import { Session } from "next-auth";
+import  type { Session } from "next-auth";
 import { signIn, signOut } from "next-auth/react";
 import Image from "next/image";
 

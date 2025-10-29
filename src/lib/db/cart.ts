@@ -1,5 +1,5 @@
 import { authOptions } from "@/lib/authOptions";
-import { Cart, CartItem, Prisma } from "@prisma/client";
+import  type { Cart, CartItem, Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { cookies } from "next/headers";
 import { prisma } from "./prisma";

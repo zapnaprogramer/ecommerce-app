@@ -4,7 +4,7 @@
 // @ts-ignore
 import { useFormStatus } from "react-dom";
 
-import { ComponentProps } from "react";
+import  type { ComponentProps } from "react";
 
 
 
