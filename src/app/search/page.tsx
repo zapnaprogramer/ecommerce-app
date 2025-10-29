@@ -1,56 +1,50 @@
-import ProductCard from "@/components/ProductCard";
-import { prisma } from "@/lib/db/prisma";
-import { Metadata } from "next";
+"use client";
 
-interface SearchPageProps {
-  searchParams: Promise<{ query?: string }>;
-}
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
-// ✅ Handle async searchParams (Next.js 15+ expects a Promise)
-export async function generateMetadata(
-  { searchParams }: SearchPageProps
-): Promise<Metadata> {
-  const params = await searchParams;
-  const query = params?.query || "";
+export default function SearchPage() {
+  const searchParams = useSearchParams();
+  const query = searchParams.get("q") || "";
+  const [results, setResults] = useState<string[]>([]);
 
-  return {
-    title: query ? `Search: ${query} - Flowmazon` : "Search - Flowmazon",
-  };
-}
+  useEffect(() => {
+    // Simulate fetching search results
+    if (query) {
+      const fakeResults = ["apple", "banana", "orange", "grape"].filter(item =>
+        item.toLowerCase().includes(query.toLowerCase())
+      );
+      setResults(fakeResults);
+    } else {
+      setResults([]);
+    }
+  }, [query]);
 
-export default async function SearchPage(
-  { searchParams }: SearchPageProps
-) {
-  const params = await searchParams;
-  const query = params?.query || "";
-
-  // ✅ Early exit if query is empty
-  if (!query) {
-    return <div className="text-center">Please enter a search term.</div>;
-  }
-
-  // ✅ Prisma query
-  const products = await prisma.product.findMany({
-    where: {
-      OR: [
-        { name: { contains: query, mode: "insensitive" } },
-        { description: { contains: query, mode: "insensitive" } },
-      ],
-    },
-    orderBy: { id: "desc" },
-  });
-
-  // ✅ Handle no results
-  if (products.length === 0) {
-    return <div className="text-center">No products found for "{query}".</div>;
-  }
-
-  // ✅ Display results
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-      {products.map((product) => (
-        <ProductCard product={product} key={product.id} />
-      ))}
-    </div>
+    <main className="p-6">
+      <h1 className="text-2xl font-bold mb-4">
+        Search Results
+      </h1>
+
+      {query ? (
+        results.length > 0 ? (
+          <ul className="list-disc list-inside space-y-2">
+            {results.map((item, index) => (
+              <li key={index} className="text-gray-700">
+                {item}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-gray-500">
+            No results found for &quot;{query}&quot;
+          </p>
+        )
+      ) : (
+        <p className="text-gray-500">
+          Please enter a search term.
+        </p>
+      )}
+    </main>
   );
 }

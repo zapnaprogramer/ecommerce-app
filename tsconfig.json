@@ -37,7 +37,7 @@
     },
 
     /* ✅ Add new features from Next.js 15+ */
-    "types": ["@types/node", "next", "next/types/global"],
+    "types": ["node", "next"],
 
     /* ✅ Fix for async searchParams and serverActions typing */
     "noImplicitOverride": true,
