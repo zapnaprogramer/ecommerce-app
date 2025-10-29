@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 
 import FormSubmitButton from "@/components/FormSubmitButton";
 

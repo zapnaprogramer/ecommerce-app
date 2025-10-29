@@ -1,4 +1,7 @@
+export const dynamic = "force-dynamic";
+
 import PaginationBar from "@/components/PaginationBar";
+
 import ProductCard from "@/components/ProductCard";
 import { prisma } from "@/lib/db/prisma";
 import Image from "next/image";
